@@ -4,7 +4,7 @@ but the idea is for them to eventually become more complex and show what Jax and
 truly capable of.
 
 [Xor with MLP](xor.ipynb), this example is based on Colin Raffel's great introductory blog post
-(You don't know JAX)[https://colinraffel.com/blog/you-don-t-know-jax.html], but using fastax's layers and
+[You don't know JAX](https://colinraffel.com/blog/you-don-t-know-jax.html), but using fastax's layers and
 utilities instead of coding everything from 0.
 
 [Simple Long Short-Term Memory example](lstm.ipynb), this example is the one created by
