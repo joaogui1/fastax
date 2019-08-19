@@ -16,14 +16,14 @@ def _get_fans(shape):
 def zeros(key, shape, dtype=np.float32): np.zeros(shape, dtype)
 def ones(key, shape, dtype=np.float32): np.ones(shape, dtype)
 
-def uniform(lim=1.):
-    def init(key, shape, dtype=np.float32):
+def uniform(mean=0.):
+    def init(key, shape, lim=1., dtype=np.float32):
         return random.uniform(key, shape, dtype, minval=-lim, maxval=lim)
     return init
 
-def normal(stddev=1.):
-    def init(key, shape, dtype=np.float32):
-        return random.normal(key, shape, dtype) * stddev
+def normal(mean=0.):
+    def init(key, shape, stddev=1., dtype=np.float32):
+        return random.normal(key, shape, dtype) * stddev + mean
     return init
 
 
@@ -55,10 +55,20 @@ def variance_scaling(scale, mode, distribution):
             raise ValueError("invalid distribution for variance scaling initializer")
     return init
 
-glorot_uniform = variance_scaling(1.0, "fan_avg", "uniform")
-glorot_normal = variance_scaling(1.0, "fan_avg", "truncated_normal")
-lecun_uniform = variance_scaling(1.0, "fan_in", "uniform")
-lecun_normal = variance_scaling(1.0, "fan_in", "truncated_normal")
+def glorot_uniform(scale=1.):
+    return variance_scaling(scale, "fan_avg", "uniform")
+
+
+def glorot_normal(scale=1.):
+    return variance_scaling(scale, "fan_avg", "truncated_normal")
+
+
+def leccun_uniform(scale=1.):
+    return variance_scaling(scale, "fan_in", "uniform")
+
+
+def leccun_normal(scale=1.):
+    return variance_scaling(scale, "fan_in", "truncated_normal")
 
 
 def kaiming_normal(param=0.):

@@ -38,13 +38,13 @@ from ..initializers import *
 #   apply_fun: takes params, inputs, and an rng key and applies the layer.
 
 
-def Dense(out_dim, W_init=kaiming_uniform(), b_init=None):
+def Dense(out_dim, W_init=kaiming_uniform(), b_init=normal()):
     """Layer constructor function for a dense (fully-connected) layer."""
-    b_init = b_init or normal(1. / np.sqrt(out_dim))
     def init_fun(rng, input_shape):
         output_shape = input_shape[:-1] + (out_dim,)
         k1, k2 = random.split(rng)
-        W, b = W_init(k1, (input_shape[-1], out_dim)), b_init(k2, (out_dim,))
+        W = W_init(k1, (input_shape[-1], out_dim))
+        b = b_init(k2, (out_dim,), stddev=1. / np.sqrt(out_dim))
         return output_shape, (W, b)
 
     def apply_fun(params, inputs, **kwargs):
@@ -61,7 +61,7 @@ def GeneralConv(
     strides=None,
     padding="VALID",
     W_init=None,
-    b_init=None,
+    b_init=normal(),
 ):
     """Layer construction function for a general convolution layer."""
     lhs_spec, rhs_spec, out_spec = dimension_numbers
@@ -86,9 +86,8 @@ def GeneralConv(
         bias_shape = tuple(itertools.dropwhile(lambda x: x == 1, bias_shape))
         k1, k2 = random.split(rng)
 
-        if b_init is None:
-            b_init = normal(1. / np.sqrt(np.prod(kernel_shape[:-1])))
-        W, b = W_init(k1, kernel_shape), b_init(k2, bias_shape)
+        b_std = 1. / np.sqrt(np.prod(kernel_shape[:-1]))
+        W, b = W_init(k1, kernel_shape), b_init(k2, bias_shape, stddev=b_std)
         return output_shape, (W, b)
 
     def apply_fun(params, inputs, **kwargs):
@@ -110,7 +109,7 @@ def DepthwiseConv2D(out_chan,
                     strides=None,
                     padding="VALID",
                     W_init=None,
-                    b_init=None,
+                    b_init=normal(),
                     ):
     one = (1,) * len(filter_shape)
     strides = strides or one
@@ -126,9 +125,8 @@ def DepthwiseConv2D(out_chan,
         bias_shape = tuple(input_shape[0], out_chan * input_shape[3])
         k1, k2 = random.split(rng)
 
-        if b_init is None:
-            b_init = normal(1. / np.sqrt(np.prod(kernel_shape[:-1])))
-        W, b = W_init(k1, kernel_shape), b_init(k2, bias_shape)
+        b_std = (1. / np.sqrt(np.prod(kernel_shape[:-1])))
+        W, b = W_init(k1, kernel_shape), b_init(k2, bias_shape, stddev=b_std)
         return output_shape, (W, b)
 
     def apply_fun(params, inputs, **kwargs):
@@ -151,7 +149,7 @@ def GeneralConvTranspose(
     strides=None,
     padding="VALID",
     W_init=None,
-    b_init=normal(1e-6),
+    b_init=normal(),
 ):
     """Layer construction function for a general transposed-convolution layer."""
     lhs_spec, rhs_spec, out_spec = dimension_numbers
@@ -175,7 +173,8 @@ def GeneralConvTranspose(
         bias_shape = [out_chan if c == "C" else 1 for c in out_spec]
         bias_shape = tuple(itertools.dropwhile(lambda x: x == 1, bias_shape))
         k1, k2 = random.split(rng)
-        W, b = W_init(k1, kernel_shape), b_init(k2, bias_shape)
+        b_std = (1. / np.sqrt(np.prod(kernel_shape[:-1])))
+        W, b = W_init(k1, kernel_shape), b_init(k2, bias_shape, stddev=b_std)
         return output_shape, (W, b)
 
     def apply_fun(params, inputs, **kwargs):
@@ -189,7 +188,7 @@ Conv1DTranspose = functools.partial(GeneralConvTranspose, ("NHC", "HIO", "NHC"))
 ConvTranspose = functools.partial(GeneralConvTranspose, ("NHWC", "HWIO", "NHWC"))
 
 
-def LSTM(out_dim, W_init=glorot_uniform, b_init=normal()):
+def LSTM(out_dim, W_init=glorot_uniform(), b_init=normal()):
     def init_fun(rng, input_shape):
         k1, k2 = random.split(rng)
         cell, hidden = b_init(k1, (out_dim,)), b_init(k2, (out_dim,))
