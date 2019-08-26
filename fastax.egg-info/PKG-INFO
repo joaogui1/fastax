@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: fastax
-Version: 0.1.1
+Version: 0.1.2
 Summary: A Jax based neural network library for research
 Home-page: https://github.com/joaogui1/fastax
 Author: João Guilherme Madeira Araújo
