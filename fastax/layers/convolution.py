@@ -25,9 +25,9 @@ import operator
 import six
 import numpy as np
 
-from tensor2tensor.trax import backend
-from tensor2tensor.trax.layers import base
-from tensor2tensor.trax.layers import initializers as init
+from fastax import utils
+from fastax.layers import base
+from fastax import initializers as init
 
 
 class Conv(base.Layer):
@@ -64,7 +64,7 @@ class Conv(base.Layer):
       self._check_nhwc()
       new_batch_dim = six.moves.reduce(operator.mul, x_shape[:-3])
       x = np.reshape(x, [new_batch_dim] + x_shape[-3:])
-    res = backend.conv(
+    res = utils.conv(
         x, w, self._strides, self._padding, self._dimension_numbers,
         self._one) + b
     if len(x_shape) > 4:

@@ -26,9 +26,8 @@ import jax
 from jax import random
 
 import numpy as onp
-from tensor2tensor.trax import backend
-from tensor2tensor.trax.backend import nested_map
-from tensor2tensor.trax.backend import ShapeType
+from fastax.utils import nested_map
+from fastax.utils import ShapeType
 
 
 class Layer(object):
