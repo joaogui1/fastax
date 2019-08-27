@@ -19,8 +19,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from tensor2tensor.trax import backend
-from tensor2tensor.trax.layers import base
+from fastax import utils
+from fastax.layers import base
 
 
 @base.layer()

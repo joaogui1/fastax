@@ -19,13 +19,14 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import jax
 import numpy as onp
 
-from tensor2tensor.trax import backend
-from tensor2tensor.trax.backend import numpy as np
-from tensor2tensor.trax.layers import base
-from tensor2tensor.trax.layers import initializers as init
+import jax
+import jax.numpy as np
+
+from fastax import utils
+from fastax.layers import base
+from fastax.layers import initializers as init
 
 
 @base.layer()
@@ -64,14 +65,14 @@ def Exp(x, **unused_kwargs):
 def LogSoftmax(x, params, axis=-1, **kwargs):
   """Apply log softmax to x: log-normalize along the given axis."""
   del params, kwargs
-  return x - backend.logsumexp(x, axis, keepdims=True)
+  return x - jax.scipy.special.logsumexp(x, axis, keepdims=True)
 
 
 @base.layer()
 def Softmax(x, params, axis=-1, **kwargs):
   """Apply softmax to x: exponentiate and normalize along the given axis."""
   del params, kwargs
-  return np.exp(x - backend.logsumexp(x, axis, keepdims=True))
+  return np.exp(x - jax.scipy.special.logsumexp(x, axis, keepdims=True))
 
 
 @base.layer()
@@ -102,7 +103,7 @@ class Dense(base.Layer):
 
   def new_parameters(self, input_shape, input_dtype, rng):
     del input_dtype
-    rng1, rng2 = backend.random.split(rng, 2)
+    rng1, rng2 = jax.random.split(rng, 2)
     w = self._kernel_initializer((input_shape[-1], self._n_units), rng1)
     b = self._bias_initializer((self._n_units,), rng2)
     return (w, b), ()
@@ -151,7 +152,7 @@ def Dropout(x, params, rate=0.0, mode='train', rng=None, **kwargs):
   if rate >= 1.0:
     raise ValueError('Dropout rate (%f) must be lower than 1.' % rate)
   if mode == 'train' and rate > 0.0:
-    keep = backend.random.bernoulli(rng, 1.0 - rate, x.shape)
+    keep = jax.random.bernoulli(rng, 1.0 - rate, x.shape)
     return np.where(keep, x / (1.0 - rate), np.zeros_like(x))
   else:
     return x
@@ -172,9 +173,7 @@ def AddConstant(x, params, constant=0.0, **unused_kwargs):
 def one_hot(x, size, dtype=np.float32):  # pylint: disable=invalid-name
   """Make a n+1 dim one-hot array from n dim int-categorical array."""
   arange_size = np.arange(size)
-  if backend.get_name() == 'jax':
-    # Work around a jax broadcasting issue.
-    arange_size = jax.lax.tie_in(x, arange_size)
+  arange_size = jax.lax.tie_in(x, arange_size)
   return np.array(x[..., np.newaxis] == arange_size, dtype)
 
 
