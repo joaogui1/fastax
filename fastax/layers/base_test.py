@@ -19,8 +19,11 @@ from __future__ import division
 from __future__ import print_function
 
 from absl.testing import absltest
-from tensor2tensor.trax import backend
-from tensor2tensor.trax.layers import base
+
+import jax
+import jax.numpy as np
+from jax import random
+from fastax.layers import base
 
 
 class BaseLayerTest(absltest.TestCase):
@@ -51,16 +54,16 @@ class BaseLayerTest(absltest.TestCase):
         return True
 
       def custom_grad(self, inputs, output, ct, params, **kwargs):
-        return (backend.numpy.zeros_like(ct), ())
+        return (np.zeros_like(ct), ())
 
     layer = IdWithZeroGrad()
-    rng = backend.random.get_prng(0)
+    rng = random.PRNGKey(0)
     params = ()
     input_shape = (9, 17)
-    random_input = backend.random.uniform(rng, input_shape, minval=-1.0,
+    random_input = random.uniform(rng, input_shape, minval=-1.0,
                                           maxval=1.0)
-    f = lambda x: backend.numpy.mean(layer(x, params, rng=rng)[0])
-    grad = backend.grad(f)(random_input)
+    f = lambda x: np.mean(layer(x, params, rng=rng)[0])
+    grad = jax.grad(f)(random_input)
     self.assertEqual(grad.shape, input_shape)  # Gradient for each input.
     self.assertEqual(sum(sum(grad * grad)), 0.0)  # Each one is 0.
 
@@ -84,13 +87,13 @@ class BaseLayerTest(absltest.TestCase):
         return (inputs, ())
 
     layer = IdWithIdGrad()
-    rng = backend.random.get_prng(0)
+    rng = random.PRNGKey(0)
     params = ()
     input_shape = (9, 17)
-    random_input = backend.random.uniform(rng, input_shape, minval=-1.0,
+    random_input = random.uniform(rng, input_shape, minval=-1.0,
                                           maxval=1.0)
-    f = lambda x: backend.numpy.mean(layer(x, params, rng=rng)[0])
-    grad = backend.grad(f)(random_input)
+    f = lambda x: np.mean(layer(x, params, rng=rng)[0])
+    grad = jax.grad(f)(random_input)
     self.assertEqual(grad.shape, input_shape)  # Gradient for each input.
     self.assertEqual(sum(sum(grad)), sum(sum(random_input)))  # Same as input.
 

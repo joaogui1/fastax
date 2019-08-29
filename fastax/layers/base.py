@@ -26,8 +26,9 @@ import jax
 from jax import random
 
 import numpy as onp
-from fastax.utils import nested_map
 from fastax.utils import ShapeType
+from fastax.utils import nested_map
+from fastax.utils import eval_on_shapes
 
 
 class Layer(object):
@@ -191,7 +192,7 @@ class Layer(object):
         return self.call(x, params=params, state=state, rng=rng)
       params_shapes = nested_map(
           params, lambda x: ShapeType(shape=x.shape, dtype=x.dtype))
-      s = backend.eval_on_shapes(call_on_input)(pseudo_inputs,
+      s = eval_on_shapes(call_on_input)(pseudo_inputs,
                                                 params_shapes, state, rng)
       return s
     except Exception:
@@ -519,7 +520,7 @@ def check_shape_agreement(layer_fn, input_shapes, integer_inputs=False):
     A tuple representing either a single shape (if the layer has one output) or
     a tuple of shape tuples (if the layer has more than one output).
   """
-  rng1, rng2, rng3 = random.split(random.get_prng(0), 3)
+  rng1, rng2, rng3 = random.split(random.PRNGKey(0), 3)
   input_dtype = onp.int32 if integer_inputs else onp.float32
   if _is_tuple_of_shapes(input_shapes):
     pseudo_data = tuple(ShapeType(x, input_dtype) for x in input_shapes)
