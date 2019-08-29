@@ -19,17 +19,16 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as onp
-from tensor2tensor.trax import backend
-
+import jax
 
 def _get_fans(shape, out_dim=-1, in_dim=-2):
   #temporary fix until numpy.delete supports negative indices
   if out_dim < 0:
-    out_dim += shape
+    out_dim += len(shape)
   if in_dim < 0:
-    in_dim += shape
+    in_dim += len(shape)
 
-  receptive_field = backend.numpy.prod(onp.delete(shape, [in_dim, out_dim]))
+  receptive_field = jax.numpy.prod(onp.delete(shape, [in_dim, out_dim]))
   if len(shape) >= 2:
     fan_in, fan_out = shape[in_dim], shape[out_dim]
   elif len(shape) == 1:
@@ -45,7 +44,7 @@ def RandomNormalInitializer(stddev=1e-2):
   """An initializer function for random normal coefficients."""
 
   def Init(shape, rng):
-    return (stddev * backend.random.normal(rng, shape)).astype('float32')
+    return (stddev * jax.random.normal(rng, shape)).astype('float32')
 
   return Init
 
@@ -54,8 +53,8 @@ def RandomUniformInitializer(lim=1.0):
   """An initializer function for random uniform coefficients."""
 
   def Init(shape, rng):
-    return (backend.random.uniform(rng, shape, backend.numpy.float32, -lim,
-                                   lim))
+    return (jax.random.uniform(rng, shape, jax.numpy.float32, -lim,
+                              lim))
 
   return Init
 
@@ -80,15 +79,15 @@ def VarianceScalingInitializer(out_dim, in_dim, scale, mode, distribution):
       gain /= (fan_in + fan_out) / 2
     if distribution == 'truncated_normal':
       # constant from scipy.stats.truncnorm.std(a=-2, b=2, loc=0., scale=1.)
-      stddev = backend.numpy.sqrt(gain) / .87962566103423978
-      return (backend.random.truncated_normal(rng, -2, 2, shape) *
+      stddev = jax.numpy.sqrt(gain) / .87962566103423978
+      return (jax.random.truncated_normal(rng, -2, 2, shape) *
               stddev).astype('float32')
     elif distribution == 'normal':
-      return (backend.random.normal(rng, shape) *
-              backend.numpy.sqrt(gain)).astype('float32')
+      return (jax.random.normal(rng, shape) *
+              jax.numpy.sqrt(gain)).astype('float32')
     elif distribution == 'uniform':
-      lim = backend.numpy.sqrt(3. * gain)
-      return (backend.random.uniform(rng, shape, backend.numpy.float32, -lim,
+      lim = jax.numpy.sqrt(3. * gain)
+      return (jax.random.uniform(rng, shape, jax.numpy.float32, -lim,
                                      lim))
     else:
       raise ValueError('invalid distribution for variance scaling Initializer')
@@ -120,12 +119,12 @@ def LeCunUniformInitializer(out_dim=-1, in_dim=-2, scale=1.):
 def KaimingNormalInitializer(out_dim=-1, in_dim=-2, param=0.):
   """An initializer function for random Kaiming-scaled coefficients."""
   return VarianceScalingInitializer(out_dim, in_dim,
-                                    2.0 / backend.numpy.sqrt(1 + param**2),
+                                    2.0 / jax.numpy.sqrt(1 + param**2),
                                     'fan_in', 'normal')
 
 
 def KaimingUniformInitializer(out_dim=-1, in_dim=-2, param=0.):
   """An initializer function for random uniform Kaiming-scaled coefficients."""
   return VarianceScalingInitializer(out_dim, in_dim,
-                                    2.0 / backend.numpy.sqrt(1 + param**2),
+                                    2.0 / jax.numpy.sqrt(1 + param**2),
                                     'fan_in', 'uniform')

@@ -20,7 +20,7 @@ from __future__ import print_function
 
 import gin
 
-from tensor2tensor.trax.optimizers import base
+from fastax.optimizers import base
 
 
 def opt_configure(*args, **kwargs):

@@ -19,26 +19,26 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from tensor2tensor.trax import backend
-from tensor2tensor.trax.layers import base
+from fastax import utils
+from fastax.layers import base
 
 
 @base.layer()
 def MaxPool(x, params, pool_size=(2, 2), strides=None, padding='VALID', **kw):
   del params, kw
-  return backend.max_pool(x, pool_size=pool_size, strides=strides,
+  return utils.max_pool(x, pool_size=pool_size, strides=strides,
                           padding=padding)
 
 
 @base.layer()
 def SumPool(x, params, pool_size=(2, 2), strides=None, padding='VALID', **kw):
   del params, kw
-  return backend.sum_pool(x, pool_size=pool_size, strides=strides,
+  return utils.sum_pool(x, pool_size=pool_size, strides=strides,
                           padding=padding)
 
 
 @base.layer()
 def AvgPool(x, params, pool_size=(2, 2), strides=None, padding='VALID', **kw):
   del params, kw
-  return backend.avg_pool(x, pool_size=pool_size, strides=strides,
+  return utils.avg_pool(x, pool_size=pool_size, strides=strides,
                           padding=padding)

@@ -19,9 +19,9 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from tensor2tensor.trax.layers import combinators as cb
-from tensor2tensor.trax.layers import convolution
-from tensor2tensor.trax.layers import core
+from fastax import combinators as cb
+from fastax import convolution
+from fastax import core
 
 
 def GRUCell(n_units):

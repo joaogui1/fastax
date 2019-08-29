@@ -23,7 +23,7 @@ import numpy as np
 
 import jax
 from jax import random
-from tensor2tensor.trax.layers import base
+from fastax.layers import base
 
 
 def Model(*layers):

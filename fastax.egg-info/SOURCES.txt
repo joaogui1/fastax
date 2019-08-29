@@ -9,8 +9,6 @@ fastax.egg-info/requires.txt
 fastax.egg-info/top_level.txt
 fastax/activations/__init__.py
 fastax/activations/activations.py
-fastax/initializers/__init__.py
-fastax/initializers/initializers.py
 fastax/layers/__init__.py
 fastax/layers/attention.py
 fastax/layers/attention_test.py
@@ -36,4 +34,5 @@ fastax/layers/rnn_test.py
 fastax/losses/__init__.py
 fastax/losses/losses.py
 fastax/optimizers/__init__.py
+fastax/optimizers/base.py
 fastax/optimizers/optimizers.py
