@@ -19,9 +19,9 @@ from __future__ import division
 from __future__ import print_function
 
 from absl.testing import absltest
-from tensor2tensor.trax.layers import base
-from tensor2tensor.trax.layers import combinators as cb
-from tensor2tensor.trax.layers import core
+from fastax.layers import base
+from fastax.layers import combinators as cb
+from fastax.layers import core
 
 
 class CombinatorLayerTest(absltest.TestCase):
