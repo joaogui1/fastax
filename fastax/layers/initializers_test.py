@@ -19,8 +19,8 @@ from __future__ import division
 from __future__ import print_function
 
 from absl.testing import absltest
-from tensor2tensor.trax.backend import random
-from tensor2tensor.trax.layers import initializers
+from jax import random
+from fastax.layers import initializers
 
 
 class InitializersTest(absltest.TestCase):
@@ -28,55 +28,55 @@ class InitializersTest(absltest.TestCase):
   def test_random_normal(self):
     initializer = initializers.RandomNormalInitializer()
     input_shape = (29, 5, 7, 20)
-    init_value = initializer(input_shape, random.get_prng(0))
+    init_value = initializer(input_shape, random.PRNGKey(0))
     self.assertEqual(tuple(init_value.shape), input_shape)
 
 
   def test_random_uniform(self):
     initializer = initializers.RandomUniformInitializer()
     input_shape = (29, 5, 7, 20)
-    init_value = initializer(input_shape, random.get_prng(0))
+    init_value = initializer(input_shape, random.PRNGKey(0))
     self.assertEqual(tuple(init_value.shape), input_shape)
 
   def test_glorot_normal(self):
     initializer = initializers.GlorotNormalInitializer()
     input_shape = (29, 5, 7, 20)
-    init_value = initializer(input_shape, random.get_prng(0))
+    init_value = initializer(input_shape, random.PRNGKey(0))
     self.assertEqual(tuple(init_value.shape), input_shape)
 
 
   def test_glorot_uniform(self):
     initializer = initializers.GlorotUniformInitializer()
     input_shape = (29, 5, 7, 20)
-    init_value = initializer(input_shape, random.get_prng(0))
+    init_value = initializer(input_shape, random.PRNGKey(0))
     self.assertEqual(tuple(init_value.shape), input_shape)
 
 
   def test_lecun_normal(self):
     initializer = initializers.LeCunNormalInitializer()
     input_shape = (29, 5, 7, 20)
-    init_value = initializer(input_shape, random.get_prng(0))
+    init_value = initializer(input_shape, random.PRNGKey(0))
     self.assertEqual(tuple(init_value.shape), input_shape)
 
 
   def test_lecun_uniform(self):
     initializer = initializers.LeCunUniformInitializer()
     input_shape = (29, 5, 7, 20)
-    init_value = initializer(input_shape, random.get_prng(0))
+    init_value = initializer(input_shape, random.PRNGKey(0))
     self.assertEqual(tuple(init_value.shape), input_shape)
 
 
   def test_kaiming_normal(self):
     initializer = initializers.KaimingNormalInitializer()
     input_shape = (29, 5, 7, 20)
-    init_value = initializer(input_shape, random.get_prng(0))
+    init_value = initializer(input_shape, random.PRNGKey(0))
     self.assertEqual(tuple(init_value.shape), input_shape)
 
 
   def test_kaiming_uniform(self):
     initializer = initializers.KaimingUniformInitializer()
     input_shape = (29, 5, 7, 20)
-    init_value = initializer(input_shape, random.get_prng(0))
+    init_value = initializer(input_shape, random.PRNGKey(0))
     self.assertEqual(tuple(init_value.shape), input_shape)
 
 

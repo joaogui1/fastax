@@ -22,7 +22,6 @@ fastax/layers/core.py
 fastax/layers/core_test.py
 fastax/layers/initializers.py
 fastax/layers/initializers_test.py
-fastax/layers/layers.py
 fastax/layers/normalization.py
 fastax/layers/normalization_test.py
 fastax/layers/pooling.py
