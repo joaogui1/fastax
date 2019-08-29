@@ -19,8 +19,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from tensor2tensor.trax.backend import numpy as np
-from tensor2tensor.trax.layers import base
+import jax.numpy as np
+from fastax.layers import base
 
 
 class BatchNorm(base.Layer):

@@ -20,9 +20,9 @@ from __future__ import division
 from __future__ import print_function
 
 import jax
-from tensor2tensor.trax import backend
-from tensor2tensor.trax.layers import base
-from tensor2tensor.trax.layers import combinators as cb
+from jax import random
+from fastax.layers import base
+from fastax.layers import combinators as cb
 
 
 class ReversibleLayer(base.Layer):
@@ -95,7 +95,7 @@ class ReversibleSerial(ReversibleLayer, cb.Serial):
     rng = kwargs.pop('rng', None)
     rngs = (None,) * self._n_layers
     if rng is not None:
-      rngs = backend.random.split(rng, self._n_layers)
+      rngs = random.split(rng, self._n_layers)
 
     layer_val = output
     for layer, p, rng in reversed(zip(self.sublayers(), params, rngs)):
@@ -107,7 +107,7 @@ class ReversibleSerial(ReversibleLayer, cb.Serial):
     rng = kwargs.pop('rng', None)
     rngs = (None,) * self._n_layers
     if rng is not None:
-      rngs = backend.random.split(rng, self._n_layers)
+      rngs = random.split(rng, self._n_layers)
 
     layer_val = output
     layer_ct = ct
