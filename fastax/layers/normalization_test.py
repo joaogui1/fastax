@@ -21,10 +21,11 @@ from __future__ import print_function
 from absl.testing import absltest
 import numpy as onp
 
-from tensor2tensor.trax import backend
-from tensor2tensor.trax.backend import numpy as np
-from tensor2tensor.trax.layers import base
-from tensor2tensor.trax.layers import normalization
+from jax import random
+import jax.numpy as np
+
+from fastax.layers import base
+from fastax.layers import normalization
 
 
 class NormalizationLayerTest(absltest.TestCase):
@@ -39,7 +40,7 @@ class NormalizationLayerTest(absltest.TestCase):
     input_shape = (2, 3, 4)
     input_dtype = np.float32
     eps = 1e-5
-    rng = backend.random.get_prng(0)
+    rng = random.PRNGKey(0)
     inp1 = np.reshape(np.arange(np.prod(input_shape), dtype=input_dtype),
                       input_shape)
     m1 = 11.5

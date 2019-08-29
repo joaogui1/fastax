@@ -20,8 +20,8 @@ from __future__ import division
 from __future__ import print_function
 
 from absl.testing import absltest
-from tensor2tensor.trax.layers import base
-from tensor2tensor.trax.layers import rnn
+from fastax.layers import base
+from fastax.layers import rnn
 
 
 class RnnLayerTest(absltest.TestCase):
