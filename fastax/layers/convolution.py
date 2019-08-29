@@ -27,7 +27,7 @@ import numpy as np
 
 from fastax import utils
 from fastax.layers import base
-from fastax import initializers as init
+from fastax.layers import initializers as init
 
 
 class Conv(base.Layer):

@@ -21,11 +21,13 @@ from __future__ import print_function
 import jax
 import numpy as onp
 
-from tensor2tensor.trax import backend
-from tensor2tensor.trax.backend import numpy as np
-from tensor2tensor.trax.layers import base
-from tensor2tensor.trax.layers import combinators as cb
-from tensor2tensor.trax.layers import core
+from jax import random
+import jax.numpy as np
+
+from fastax import utils
+from fastax.layers import base
+from fastax.layers import combinators as cb
+from fastax.layers import core
 
 
 @base.layer()
@@ -96,15 +98,14 @@ def DotProductAttention(query, key, value, mask, dropout, mode, rng):
     # We must ensure that both mask and the -1e9 constant have a data dependency
     # on the input. Broadcasted copies of these use a lot of memory, so they
     # should be computed at runtime (rather than being global constants).
-    if backend.get_name() == 'jax':
-      mask = jax.lax.tie_in(dots, mask)
+    mask = jax.lax.tie_in(dots, mask)
     dots = np.where(mask, dots, np.full_like(dots, -1e9))
   # Softmax.
-  dots = np.exp(dots - backend.logsumexp(dots, axis=-1, keepdims=True))
+  dots = np.exp(dots - utils.logsumexp(dots, axis=-1, keepdims=True))
   if dropout >= 1.0:
     raise ValueError('Dropout rates must be lower than 1.')
   if dropout is not None and dropout > 0.0 and mode == 'train':
-    keep = backend.random.bernoulli(rng, 1.0 - dropout, dots.shape)
+    keep = random.bernoulli(rng, 1.0 - dropout, dots.shape)
     dots = np.where(keep, dots / (1.0 - dropout), np.zeros_like(dots))
   out = np.matmul(dots, value)
   return out
