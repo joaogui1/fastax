@@ -23,7 +23,7 @@ import itertools
 import operator
 
 import six
-import numpy as np
+import jax.numpy as np
 
 from fastax import utils
 from fastax.layers import base

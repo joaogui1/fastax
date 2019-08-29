@@ -19,8 +19,8 @@ from __future__ import division
 from __future__ import print_function
 
 from absl.testing import absltest
-from tensor2tensor.trax.layers import base
-from tensor2tensor.trax.layers import convolution
+from fastax.layers import base
+from fastax.layers import convolution
 
 
 class ConvolutionLayerTest(absltest.TestCase):
