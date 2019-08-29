@@ -81,7 +81,7 @@ class CoreLayerTest(absltest.TestCase):
     model1 = combinators.Serial(core.Dense(32), core.Dense(32))
     layer = core.Dense(32)
     model2 = combinators.Serial(layer, layer)
-    rng = random.PRNG(0)
+    rng = random.PRNGKey(0)
     params1, _ = model1.initialize((1, 32), onp.float32, rng)
     params2, _ = model2.initialize((1, 32), onp.float32, rng)
     # The first parameters have 2 kernels of size (32, 32).
